@@ -1,0 +1,1 @@
+var DVPageLikes={record:function(){if(DVStore.get('dv_liked')==='1')return Promise.reject(new Error('You already liked this app.'));return DVAPI.call('stat',{ev:'like'}).then(function(r){DVStore.set('dv_liked','1');return r;});}};
