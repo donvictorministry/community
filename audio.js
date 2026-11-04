@@ -1,0 +1,5 @@
+var DVAudio=(function(){var rec,chunks=[],stream,t0,max=5*1048576;
+function start(){return navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){stream=s;chunks=[];var o={audioBitsPerSecond:32000};if(window.MediaRecorder&&MediaRecorder.isTypeSupported('audio/webm;codecs=opus'))o.mimeType='audio/webm;codecs=opus';rec=new MediaRecorder(s,o);rec.ondataavailable=function(e){if(e.data.size)chunks.push(e.data);};rec.start(500);t0=Date.now();});}
+function stop(){return new Promise(function(res,rej){if(!rec||rec.state==='inactive')return rej(new Error('Not recording.'));rec.onstop=function(){stream.getTracks().forEach(function(t){t.stop();});var b=new Blob(chunks,{type:rec.mimeType||'audio/webm'});if(b.size>max)return rej(new Error('Recording exceeds 5MB.'));res({blob:b,dur:Math.round((Date.now()-t0)/1000)});};rec.stop();});}
+function b64(b){return new Promise(function(r,j){var f=new FileReader();f.onload=function(){r(String(f.result).split(',')[1]);};f.onerror=j;f.readAsDataURL(b);});}
+return{start:start,stop:stop,b64:b64};})();
