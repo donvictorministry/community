@@ -8,22 +8,10 @@
   "theme_color": "#1877F2",
   "icons": [
     {
-      "src": "https://app.donvictorministry.org.ng/community/logo.png",
-      "sizes": "192x192",
+      "src": "logo.png",
+      "sizes": "192x192 512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "https://app.donvictorministry.org.ng/community/logo.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "https://app.donvictorministry.org.ng/community/logo.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ]
 }
