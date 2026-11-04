@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1877F2"><link rel="manifest" href="admin-manifest.json"><title>Admin Control Center</title>
+<style>:root{--brand-blue:#1877F2;--error-red:#FA3E3E;--bg-color:#F0F2F5;--container-bg:#FFFFFF;--text-primary:#1C1E21;--text-secondary:#606770;--border-color:#CCD0D5}
+body.dark-mode{--bg-color:#18191A;--container-bg:#242526;--text-primary:#E4E6EB;--text-secondary:#B0B3B8;--border-color:#3E4042}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Roboto,system-ui,sans-serif;font-size:19px}
+html,body{width:100dvw;min-height:100dvh;background:var(--bg-color);color:var(--text-primary);overflow-x:hidden}
+.c{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;gap:14px}
+.logo{width:140px;height:140px;border-radius:50%;background:var(--brand-blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:22px;user-select:none}
+button{min-height:48px;border:0;border-radius:24px;padding:10px 20px;background:var(--brand-blue);color:#fff;font-weight:bold}
+button.r{background:var(--error-red)}button.o{background:var(--container-bg);color:var(--brand-blue);border:2px solid var(--brand-blue)}
+input{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:12px;background:var(--container-bg);color:var(--text-primary)}
+.spin{width:56px;height:56px;border:6px solid var(--border-color);border-top-color:var(--brand-blue);border-radius:50%;animation:s 1s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+#toast{position:fixed;left:12px;right:12px;margin:0 auto;width:fit-content;top:50%;transform:translateY(-50%);background:var(--text-primary);color:var(--bg-color);padding:14px 20px;border-radius:14px;display:none;z-index:9}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:8}
+#modal>div{background:var(--container-bg);border-radius:20px;padding:18px;width:100%}
+.hd{background:var(--brand-blue);color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center}
+.w{background:var(--container-bg);border:1px solid var(--border-color);border-radius:16px;padding:14px;margin:12px;overflow-wrap:anywhere}
+.g{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.g button{padding:8px 14px;min-height:44px}
+.t{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0}
+.sw{width:64px;height:36px;border-radius:18px;background:var(--border-color);position:relative;flex:none;padding:0}.sw.on{background:var(--brand-blue)}
+.sw:after{content:"";position:absolute;top:4px;left:4px;width:28px;height:28px;border-radius:50%;background:#fff;transition:left .2s}.sw.on:after{left:32px}
+</style></head><body>
+<div id="app"></div><div id="modal"><div id="mb"></div></div><div id="toast"></div>
+<script>
+(function(){'use strict';var URL_='PASTE_YOUR_WEB_APP_URL_HERE',tok=null,tap=0,tmr,iv,$=function(s){return document.querySelector(s);};
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function call(a,b){return fetch(URL_+'?a='+a,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(b||{})}).then(function(r){return r.json();}).then(function(j){if(!j.ok)throw new Error(j.err);return j;});}
+var tt;function toast(m){var t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(function(){t.style.display='none';},2800);}
+function spin(){$('#app').innerHTML='<div class="c"><div class="spin"></div></div>';}
+function modal(h){$('#mb').innerHTML=h;$('#modal').style.display='flex';}function close(){$('#modal').style.display='none';$('#mb').innerHTML='';}
+function conf(m,f){modal('<p>'+esc(m)+'</p><div class="g"><button class="o" id="n">Cancel</button><button class="r" id="y">Confirm</button></div>');$('#n').onclick=close;$('#y').onclick=function(){close();f();};}
+function ti(){return document.body.classList.contains('dark-mode')?'<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM11 1h2v3h-2zm0 19h2v3h-2zM1 11h3v2H1zm19 0h3v2h-3z"/></svg>':'<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c-5 1-10-4-9-9z"/></svg>';}
+function bindTh(){var b=$('#th');if(!b)return;b.innerHTML=ti();b.onclick=function(){document.body.classList.toggle('dark-mode');b.innerHTML=ti();};}
+function login(){tok=null;clearInterval(iv);tap=0;$('#app').innerHTML='<div class="c"><div class="logo" id="lg">Admin Control Center</div><button class="o" id="th" aria-label="Theme"></button></div>';bindTh();$('#lg').onclick=function(){clearTimeout(tmr);tap++;tmr=setTimeout(function(){tap=0;},2000);if(tap===4){tap=0;$('#app').innerHTML='<div class="c"><button id="sc">Send me code</button></div>';$('#sc').onclick=sendc;}};}
+function sendc(){spin();call('acode').then(function(){toast('Verification code has been sent to your registered email.');otp();}).catch(function(e){toast(e.message);login();});}
+function otp(){var end=Date.now()+6e5;$('#app').innerHTML='<div class="c"><div style="width:100%;display:flex;gap:6px"><input id="o" type="password" inputmode="numeric" maxlength="6" placeholder="6-digit code"><button class="o" id="e" aria-label="Show"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 5C7 5 2.700 8.100 1 12c1.700 3.900 6 7 11 7s9.300-3.100 11-7c-1.700-3.900-6-7-11-7zm0 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"/></svg></button></div><p id="tm"></p><button id="v">Verify</button></div>';
+$('#e').onclick=function(){var o=$('#o');o.type=o.type==='password'?'text':'password';};
+iv=setInterval(function(){var s=Math.max(0,Math.round((end-Date.now())/1000));$('#tm').textContent='Expires in '+Math.floor(s/60)+':'+('0'+s%60).slice(-2);if(!s){clearInterval(iv);login();}},500);
+$('#v').onclick=function(){var c=$('#o').value;spin();call('averify',{code:c}).then(function(r){clearInterval(iv);tok=r.tok;toast('You have been verified.');dash();}).catch(function(e){toast(e.message);otp();});};}
+function op(b,msg){spin();return call('admin',Object.assign({tok:tok},b)).then(function(r){if(msg)toast(msg);return r;}).catch(function(e){if(e.message==='SESSION'){toast('Session ended.');login();}else{toast(e.message);}});}
+function sw(on,id,k){return '<button class="sw'+(on?' on':'')+'" data-t="'+id+'" data-k="'+k+'" aria-label="toggle"></button>';}
+function dash(){op({op:'dash'}).then(function(d){if(!d)return;var h='<div class="hd"><b>Admin Control Center</b><span><button class="o" id="th" aria-label="Theme"></button> <button class="o" id="lo">Logout</button></span></div>';
+h+='<div class="w"><b>Quota and users</b><p>Mail quota remaining: '+d.quota+'</p><p>Emails sent today: '+d.used+'</p><p>Total users: '+d.total+'</p><p>Banned: '+d.bans+'</p></div>';
+h+='<div class="w"><b>System</b><div class="t">System online'+sw(d.sys,'sys','flag')+'</div><div class="t">Squad creation'+sw(d.sc,'sc','flag')+'</div><div class="g"><button id="ns">New squad</button><button class="o" id="ub">Lift all bans</button></div></div>';
+h+='<div class="w"><b>Default limits</b>'+[['aLim','Audio per 24h',d.lim.a],['tLim','Texts per 24h',d.lim.t],['tChars','Text characters',d.lim.x],['mb','Audio MB',d.lim.mb]].map(function(l){return '<div class="t">'+l[1]+'<span><button data-l="'+l[0]+'" data-v="'+(l[2]-1)+'">-</button> '+l[2]+' <button data-l="'+l[0]+'" data-v="'+(l[2]+1)+'">+</button></span></div>';}).join('')+'</div>';
+h+=d.squads.map(function(s){return '<div class="w"><b>'+esc(s.name)+'</b><p>Members '+s.n+'/12</p><p>Invite code: '+esc(s.code)+'</p><div class="g"><button data-cp="'+esc(new URL('index.html?c='+s.code,location.href).href)+'">Copy invite link</button></div><div class="t">Invite link'+sw(s.inv,s.id,'inv')+'</div></div>';}).join('');
+function card(u){var a=u.id+'|'+u.sq,m=u.role==='Moderator';return '<div class="w"><b>'+esc(u.e)+'</b><p>'+esc(u.role)+' | warnings '+u.wn+' | audio '+(u.a>=0?'+':'')+u.a+' | chat '+(u.t>=0?'+':'')+u.t+'</p><div class="t">Audio enabled'+sw(!u.xa,a,'xa')+'</div><div class="t">Chat enabled'+sw(!u.xc,a,'xc')+'</div><div class="t">No limits'+sw(u.u,a,'u')+'</div><div class="g">'+(m?'<button data-a="'+a+'" data-r="Member">Demote</button>':'<button data-a="'+a+'" data-r="Moderator" data-em="'+esc(u.e)+'">Promote to moderator</button>')+'<button class="o" data-a="'+a+'" data-r="Member">Approve / Restore</button><button data-a="'+a+'" data-r="Restricted">Revoke</button><button class="o" data-a="'+a+'" data-cw="1">Clear warnings</button><button data-a="'+a+'" data-o="a" data-v="1">Audio +</button><button data-a="'+a+'" data-o="a" data-v="-1">Audio -</button><button data-a="'+a+'" data-o="t" data-v="1">Chat +</button><button data-a="'+a+'" data-o="t" data-v="-1">Chat -</button><button class="r" data-a="'+a+'" data-b="1">Ban</button><button class="o" data-a="'+a+'" data-ub="1">Lift ban</button></div></div>';}
+var mods=d.users.filter(function(u){return u.role==='Moderator';});
+h+='<div class="w"><b>Moderators ('+mods.length+')</b><p>Ordinary users you promote. They can only approve or reject join requests, ban members from their squad and warn members. You can override every action and ban them.</p></div>'+mods.map(card).join('');
+if(d.log.length)h+='<div class="w"><b>Moderator activity</b>'+d.log.map(function(l){return '<p>'+esc(l.by)+' | '+esc(l.a)+' | '+esc(l.to)+'</p>';}).join('')+'</div>';
+h+='<div class="w"><b>All other users</b></div>'+d.users.filter(function(u){return u.role!=='Moderator';}).map(card).join('');
+$('#app').innerHTML=h;bindTh();$('#lo').onclick=function(){$('#app').innerHTML='';login();};
+$('#ns').onclick=function(){modal('<input id="nn" placeholder="Squad name"><div class="g"><button class="o" id="n">Cancel</button><button id="y">Create</button></div>');$('#n').onclick=close;$('#y').onclick=function(){var v=$('#nn').value.trim();close();if(v)op({op:'squad',name:v},'Squad created').then(dash);};};
+$('#ub').onclick=function(){conf('Lift all bans?',function(){op({op:'unban'},'Bans lifted').then(dash);});};
+$('#app').onclick=function(e){var b=e.target.closest('button');if(!b)return;var d=b.dataset;
+if(d.t!==undefined){var on=!b.classList.contains('on'),p=d.t.split('|');if(d.k==='flag')op({op:'flag',k:d.t,v:on},'Updated').then(dash);else if(d.k==='inv')op({op:'inv',id:d.t,v:on},'Updated').then(dash);else op({op:'ov',id:p[0],sq:p[1],k:d.k,v:d.k==='u'?on:!on},'Updated').then(dash);}
+else if(d.cp){navigator.clipboard.writeText(d.cp).then(function(){toast('Invite link copied');}).catch(function(){toast('Copy failed.');});}
+else if(d.l)op({op:'lim',k:d.l,v:d.v},'Limit updated').then(dash);
+else if(d.r){var p=d.a.split('|'),go=function(){op({op:'role',id:p[0],sq:p[1],v:d.r},'Updated').then(dash);};if(d.r==='Moderator')conf('Promote '+d.em+' to Squad Moderator? You will see every action they take.',go);else if(d.r==='Restricted')conf('Revoke access for this user?',go);else go();}
+else if(d.cw){var p=d.a.split('|');op({op:'clearwarn',id:p[0],sq:p[1]},'Warnings cleared').then(dash);}
+else if(d.ub){var p=d.a.split('|');op({op:'unban',id:p[0],sq:p[1]},'Ban lifted').then(dash);}
+else if(d.o){var p=d.a.split('|');op({op:'ov',id:p[0],sq:p[1],k:d.o,v:d.v},'Updated').then(dash);}
+else if(d.b){var p=d.a.split('|');conf('Ban this user?',function(){op({op:'ban',id:p[0],sq:p[1]},'User banned').then(dash);});}};});}
+if(matchMedia('(prefers-color-scheme: dark)').matches)document.body.classList.add('dark-mode');login();})();
+</script></body></html>
