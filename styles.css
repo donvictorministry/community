@@ -23,7 +23,7 @@ nav button{flex:1;display:flex;flex-direction:column;align-items:center;justify-
 nav button.on{color:var(--brand-blue)}
 .side{position:fixed;top:0;bottom:0;width:80dvw;background:var(--container-bg);z-index:30;transition:transform .25s;padding:8px;overflow-y:auto}
 #L{left:0;transform:translateX(-105%)}#Rr{right:0;transform:translateX(105%)}
-.side.open{transform:none}
+#L.open,#Rr.open{transform:none}
 .side button{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:10px;border-radius:12px}
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;display:none}.scrim.on{display:block}
 .page{position:fixed;inset:0;width:100dvw;height:100dvh;background:var(--bg-color);z-index:40;overflow-y:auto;display:none}
