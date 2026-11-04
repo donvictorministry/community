@@ -1,0 +1,12 @@
+#msgs{display:flex;flex-direction:column;gap:8px;padding-bottom:8px}
+.b{width:fit-content;padding:10px 14px;border-radius:18px;overflow-wrap:anywhere;position:relative}
+.b.in{align-self:flex-start;background:var(--container-bg);border:1px solid var(--border-color);border-bottom-left-radius:4px}
+.b.out{align-self:flex-end;background:var(--brand-blue);color:#fff;border-bottom-right-radius:4px}
+.b small{display:block;color:inherit;opacity:.75;margin-top:4px}
+.b .act{display:flex;gap:4px;margin-top:4px}.b .act button{min-height:40px;padding:0 8px;font-size:19px;color:inherit;opacity:.85}
+.b.re{margin-left:18px;border-left:4px solid var(--brand-blue)}
+.b.vn audio{min-width:60dvw}
+.q{border-left:3px solid currentColor;padding-left:8px;margin:0 0 6px}
+#cbar{display:flex;gap:8px;align-items:flex-end}
+#cbar textarea{margin:0;flex:1}
+#cbar button{background:var(--brand-blue);color:#fff;border-radius:50%;width:56px;height:56px}
