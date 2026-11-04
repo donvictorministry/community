@@ -21,7 +21,7 @@ input{width:100%;padding:12px;border:1px solid var(--border-color);border-radius
 </style></head><body>
 <div id="app"></div><div id="modal"><div id="mb"></div></div><div id="toast"></div>
 <script>
-(function(){'use strict';var URL_='PASTE_YOUR_WEB_APP_URL_HERE',tok=null,tap=0,tmr,iv,$=function(s){return document.querySelector(s);};
+(function(){'use strict';var URL_='https://script.google.com/macros/s/AKfycbzFiGj6Vsic41xnZvnD5XBKMn1beW0lczpDnp5GApGAB7WvWXWYe9MXX-RCBFOIaNj1/exec',tok=null,tap=0,tmr,iv,$=function(s){return document.querySelector(s);};
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function call(a,b){return fetch(URL_+'?a='+a,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(b||{})}).then(function(r){return r.json();}).then(function(j){if(!j.ok)throw new Error(j.err);return j;});}
 var tt;function toast(m){var t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(function(){t.style.display='none';},2800);}
